@@ -6,4 +6,10 @@ Furthermore, I would like to have this repo house a modular system approach to R
 
 We will see where this project takes us!
 
+Important Links:
+
+* [Team 88 ROS Repository](https://github.com/frc-88/tj2_ros)
+* [Getting Started with ROS and LiDAR](https://www.youtube.com/watch?v=Qrtz0a7HaQ4)
+* [Jetson Hacks](https://www.youtube.com/@JetsonHacks)
+
 Checkout the Github Wiki for more information.
