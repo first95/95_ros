@@ -173,6 +173,10 @@ function App() {
             style={{ position: "relative", top: "100px" }}
           ></div>
         </DisplayCard>
+
+        <DisplayCard title="Field View" scale={2}>
+          <div></div>
+        </DisplayCard>
       </Body>
 
       <Footer></Footer>
