@@ -10,6 +10,7 @@ function App() {
 
   let txt_listener: any;
   let cmd_vel_listener: any;
+  let cam_image_listener: any;
 
   const move = function (linear: any, angular: any) {
     var twist = new ROSLIB.Message({
@@ -27,11 +28,17 @@ function App() {
     cmd_vel_listener.publish(twist);
   };
 
-  const onRosSubscribe = () => {
+  const onRosSubscribe = (rosClient: any) => {
     if (!rosClient) {
       console.log("Error: rosClient is invalid!");
       return;
     }
+
+    cam_image_listener = new ROSLIB.Topic({
+      ros: rosClient,
+      name: "/tag_detections_image/compressed",
+      messageType: "sensor_msgs/CompressedImage",
+    });
 
     txt_listener = new ROSLIB.Topic({
       ros: rosClient,
@@ -48,6 +55,15 @@ function App() {
     txt_listener.subscribe(function (m: any) {
       document.getElementById("msg")!.innerHTML = m.data;
       move(1, 0);
+    });
+
+    cam_image_listener.subscribe(function (m: any) {
+      // document.getElementById("usb_cam_raw")!.innerHTML
+      let imageData = "data:image/png;base64," + m.data;
+      console.log("Object m: ", m);
+
+      // @ts-ignore
+      document.getElementById("usb_cam_raw")!.src = imageData;
     });
   };
 
@@ -81,7 +97,7 @@ function App() {
       setRosClient(undefined);
     });
 
-    onRosSubscribe();
+    onRosSubscribe(ros);
   };
 
   const onRosDisconnect = () => {
@@ -174,8 +190,10 @@ function App() {
           ></div>
         </DisplayCard>
 
-        <DisplayCard title="Field View" scale={2}>
-          <div></div>
+        <DisplayCard title="Raw Camera Image" scale={2}>
+          <div>
+            <img id="usb_cam_raw" />
+          </div>
         </DisplayCard>
       </Body>
 
