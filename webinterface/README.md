@@ -1,3 +1,19 @@
+# Overview
+
+The frontend web interface serves information coming for a ROS instance, for development its usually a VM or your own machine
+in the case of production it is the Nvidia Jetson Unit on the robot.
+
+The web interface can either be hosted on the robot or the driver station. Most likely we would host it on the driver station.
+
+## Stack
+
+- Typescript
+- [reactjs](https://reactjs.org/)
+- [Material UI](https://mui.com/material-ui/)
+- [roslib](https://www.npmjs.com/package/roslib)
+
+This project is bootstrapped using Create React App, see below.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
