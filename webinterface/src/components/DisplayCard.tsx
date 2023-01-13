@@ -6,13 +6,14 @@ interface IProps {
   title: string;
   children: any;
   scale?: number;
+  flexable?: boolean;
 }
 
 export default function DisplayCard(props: IProps) {
   let scale = props.scale ?? 1;
 
   return (
-    <Container scale={scale}>
+    <Container scale={scale} flexable={props.flexable}>
       <Header>
         <Typography>{props.title}</Typography>
       </Header>
@@ -31,7 +32,17 @@ const Header = styled.div`
 const Container = msc<any>(Paper)`
   padding: 0.5em;
   margin: 0.5em;
-  width: calc(300px * ${(props) => props.scale});
-  height: calc(250px * ${(props) => props.scale});
+  height: 300px;
+  width: 300px; 
+
+  ${(props) => (props.flexable ? "display: flex;" : "")}
+  ${(props) => (props.flexable ? "flex: 0;" : "")}
+  flex-direction: column;
+
+  ${(props) =>
+    props.flexable
+      ? ""
+      : `width: calc(300px * ${props.scale}); height: calc(250px * ${props.scale});`}
+
   border-radius: 10px;
 `;

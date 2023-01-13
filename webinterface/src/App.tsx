@@ -58,10 +58,7 @@ function App() {
     });
 
     cam_image_listener.subscribe(function (m: any) {
-      // document.getElementById("usb_cam_raw")!.innerHTML
       let imageData = "data:image/png;base64," + m.data;
-      console.log("Object m: ", m);
-
       // @ts-ignore
       document.getElementById("usb_cam_raw")!.src = imageData;
     });
@@ -105,49 +102,49 @@ function App() {
   };
 
   React.useEffect(() => {
-    const createJoystick = function () {
-      var options = {
-        zone: document.getElementById("zone_joystick"),
-        threshold: 0.1,
-        position: { left: 50 + "%" },
-        mode: "static",
-        size: 150,
-        color: "#000000",
-      };
-
-      var timer: any;
-      var manager = require("nipplejs").create(options);
-
-      let linear_speed = 0;
-      let angular_speed = 0;
-
-      manager.on("start", function (event: any, nipple: any) {
-        timer = setInterval(function () {
-          move(linear_speed, angular_speed);
-        }, 25);
-      });
-
-      manager.on("move", function (event: any, nipple: any) {
-        let max_linear = 5.0; // m/s
-        let max_angular = 2.0; // rad/s
-        let max_distance = 75.0; // pixels;
-        let linear_speed =
-          (Math.sin(nipple.angle.radian) * max_linear * nipple.distance) /
-          max_distance;
-        let angular_speed =
-          (-Math.cos(nipple.angle.radian) * max_angular * nipple.distance) /
-          max_distance;
-      });
-
-      manager.on("end", function () {
-        if (timer) {
-          clearInterval(timer);
-        }
-        move(0, 0);
-      });
-    };
-
-    createJoystick();
+    // const createJoystick = function () {
+    //   var options = {
+    //     zone: document.getElementById("zone_joystick"),
+    //     threshold: 0.1,
+    //     position: { left: 50 + "%" },
+    //     mode: "static",
+    //     size: 150,
+    //     color: "#000000",
+    //   };
+    //
+    //   var timer: any;
+    //   var manager = require("nipplejs").create(options);
+    //
+    //   let linear_speed = 0;
+    //   let angular_speed = 0;
+    //
+    //   manager.on("start", function (event: any, nipple: any) {
+    //     timer = setInterval(function () {
+    //       move(linear_speed, angular_speed);
+    //     }, 25);
+    //   });
+    //
+    //   manager.on("move", function (event: any, nipple: any) {
+    //     let max_linear = 5.0; // m/s
+    //     let max_angular = 2.0; // rad/s
+    //     let max_distance = 75.0; // pixels;
+    //     let linear_speed =
+    //       (Math.sin(nipple.angle.radian) * max_linear * nipple.distance) /
+    //       max_distance;
+    //     let angular_speed =
+    //       (-Math.cos(nipple.angle.radian) * max_angular * nipple.distance) /
+    //       max_distance;
+    //   });
+    //
+    //   manager.on("end", function () {
+    //     if (timer) {
+    //       clearInterval(timer);
+    //     }
+    //     move(0, 0);
+    //   });
+    // };
+    //
+    // createJoystick();
   }, []);
 
   return (
@@ -183,17 +180,23 @@ function App() {
           </p>
         </DisplayCard>
 
-        <DisplayCard title="Virual Joystick">
-          <div
-            id="zone_joystick"
-            style={{ position: "relative", top: "100px" }}
-          ></div>
-        </DisplayCard>
+        {/* <DisplayCard title="Virual Joystick"> */}
+        {/*   <div */}
+        {/*     id="zone_joystick" */}
+        {/*     style={{ position: "relative", top: "100px" }} */}
+        {/*   ></div> */}
+        {/* </DisplayCard> */}
 
-        <DisplayCard title="Raw Camera Image" scale={2}>
-          <div>
-            <img id="usb_cam_raw" />
-          </div>
+        <DisplayCard title="Continuous Tag Stream" flexable={true}>
+          {/* <div> */}
+          {/*   <img id="usb_cam_raw" /> */}
+          {/* </div> */}
+
+          {/* <div */}
+          {/*   style={{ border: "red solid 2px", width: "500px", height: "500px" }} */}
+          {/* > */}
+          {/*   TESTING */}
+          {/* </div> */}
         </DisplayCard>
       </Body>
 
