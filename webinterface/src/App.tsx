@@ -8,24 +8,15 @@ function App() {
   const [rosClient, setRosClient] = React.useState<any>(null);
   const [rosIP, setRosIP] = React.useState("");
 
-  let txt_listener: any;
-  let cmd_vel_listener: any;
+  let lidar_listener: any;
   let cam_image_listener: any;
+  let tf_listener: any;
 
-  const move = function (linear: any, angular: any) {
-    var twist = new ROSLIB.Message({
-      linear: {
-        x: linear,
-        y: 0,
-        z: 0,
-      },
-      angular: {
-        x: 0,
-        y: 0,
-        z: angular,
-      },
-    });
-    cmd_vel_listener.publish(twist);
+  const log = (message: string) => {
+    // @ts-ignore
+    var logArea = document.getElementById("log");
+    // @ts-ignore
+    logArea.innerText = logArea.innerText + message + "<br />";
   };
 
   const onRosSubscribe = (rosClient: any) => {
@@ -40,27 +31,22 @@ function App() {
       messageType: "sensor_msgs/CompressedImage",
     });
 
-    txt_listener = new ROSLIB.Topic({
+    tf_listener = new ROSLIB.Topic({
       ros: rosClient,
-      name: "/txt_msg",
-      messageType: "std_msgs/String",
-    });
-
-    cmd_vel_listener = new ROSLIB.Topic({
-      ros: rosClient,
-      name: "/cmd_vel",
-      messageType: "geometry_msgs/Twist",
-    });
-
-    txt_listener.subscribe(function (m: any) {
-      document.getElementById("msg")!.innerHTML = m.data;
-      move(1, 0);
+      name: "/tf",
+      messageType: "tf2_msgs/TFMessage",
     });
 
     cam_image_listener.subscribe(function (m: any) {
       let imageData = "data:image/png;base64," + m.data;
       // @ts-ignore
       document.getElementById("usb_cam_raw")!.src = imageData;
+    });
+
+    tf_listener.subscribe(function (m: any) {
+      console.log("TF Data: ", m);
+      let transformData = m.data;
+      log(transformData);
     });
   };
 
@@ -101,52 +87,6 @@ function App() {
     if (rosClient) rosClient.close();
   };
 
-  React.useEffect(() => {
-    // const createJoystick = function () {
-    //   var options = {
-    //     zone: document.getElementById("zone_joystick"),
-    //     threshold: 0.1,
-    //     position: { left: 50 + "%" },
-    //     mode: "static",
-    //     size: 150,
-    //     color: "#000000",
-    //   };
-    //
-    //   var timer: any;
-    //   var manager = require("nipplejs").create(options);
-    //
-    //   let linear_speed = 0;
-    //   let angular_speed = 0;
-    //
-    //   manager.on("start", function (event: any, nipple: any) {
-    //     timer = setInterval(function () {
-    //       move(linear_speed, angular_speed);
-    //     }, 25);
-    //   });
-    //
-    //   manager.on("move", function (event: any, nipple: any) {
-    //     let max_linear = 5.0; // m/s
-    //     let max_angular = 2.0; // rad/s
-    //     let max_distance = 75.0; // pixels;
-    //     let linear_speed =
-    //       (Math.sin(nipple.angle.radian) * max_linear * nipple.distance) /
-    //       max_distance;
-    //     let angular_speed =
-    //       (-Math.cos(nipple.angle.radian) * max_angular * nipple.distance) /
-    //       max_distance;
-    //   });
-    //
-    //   manager.on("end", function () {
-    //     if (timer) {
-    //       clearInterval(timer);
-    //     }
-    //     move(0, 0);
-    //   });
-    // };
-    //
-    // createJoystick();
-  }, []);
-
   return (
     <Container>
       <Header>
@@ -175,30 +115,32 @@ function App() {
           <p>
             Connection status: <span id="status">Unknown</span>
           </p>
-          <p>
-            Last /txt_msg received: <span id="msg"></span>
-          </p>
         </DisplayCard>
-
-        {/* <DisplayCard title="Virual Joystick"> */}
-        {/*   <div */}
-        {/*     id="zone_joystick" */}
-        {/*     style={{ position: "relative", top: "100px" }} */}
-        {/*   ></div> */}
-        {/* </DisplayCard> */}
 
         <DisplayCard title="Continuous Tag Stream" flexable={true}>
-          {/* <div> */}
-          {/*   <img id="usb_cam_raw" /> */}
-          {/* </div> */}
+          <div>
+            <img id="usb_cam_raw" />
+          </div>
+        </DisplayCard>
 
-          {/* <div */}
-          {/*   style={{ border: "red solid 2px", width: "500px", height: "500px" }} */}
-          {/* > */}
-          {/*   TESTING */}
-          {/* </div> */}
+        <DisplayCard title="LiDAR Raw Output">
+          <div id={"lidar_log"}></div>
         </DisplayCard>
       </Body>
+
+      <hr style={{ color: "white", width: "100%" }} />
+
+      <Body
+        style={{
+          border: "red solid 2px",
+          maxHeight: "250px",
+          display: "flex",
+          flexWrap: "wrap",
+          overflow: "scroll",
+          overflowWrap: "anywhere",
+        }}
+        id="log"
+      ></Body>
 
       <Footer></Footer>
     </Container>

@@ -33,7 +33,7 @@ const Container = msc<any>(Paper)`
   padding: 0.5em;
   margin: 0.5em;
   height: 300px;
-  width: 300px; 
+  min-width: 400px;
 
   ${(props) => (props.flexable ? "display: flex;" : "")}
   ${(props) => (props.flexable ? "flex: 0;" : "")}
