@@ -16,10 +16,21 @@ function App() {
     // @ts-ignore
     var logArea = document.getElementById("log");
     // @ts-ignore
-    logArea.innerText = logArea.innerText + message + "<br />";
+    logArea.innerText = logArea.innerText + message + "\n";
   };
 
-  const onRosSubscribe = (rosClient: any) => {
+  const logTf = (data: any) => {
+    log(`child_frame_id: ${data.child_frame_id}`);
+    log(`frame_id: ${data.header.frame_id}`);
+    log(
+      `translation: ${data.transform.translation.x} ${data.transform.translation.y} ${data.transform.translation.z}`
+    );
+    log(
+      `rotation: ${data.transform.rotation.w} ${data.transform.rotation.x} ${data.transform.rotation.y} ${data.transform.rotation.z}`
+    );
+  };
+
+  const onRosSubscribe = (r: any) => {
     if (!rosClient) {
       console.log("Error: rosClient is invalid!");
       return;
@@ -45,8 +56,7 @@ function App() {
 
     tf_listener.subscribe(function (m: any) {
       console.log("TF Data: ", m);
-      let transformData = m.data;
-      log(transformData);
+      // logTf(m.transforms[0]);
     });
   };
 
